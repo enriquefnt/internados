@@ -1,6 +1,8 @@
 import pandas as pd
 import mysql.connector
+import config
 
+print("pandas version "+pd.__version__)
 # Parámetros de conexión a MySQL
 db_config = {
     "host": "109.106.251.18",       
