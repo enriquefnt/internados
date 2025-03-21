@@ -1,13 +1,23 @@
 import pandas as pd
 from datetime import datetime
-
+from dateutil.relativedelta import relativedelta
 # Función para calcular la edad en días y meses
-def calcular_edad(fecha_nace, fecha_control):
-    edad_dias = (fecha_control - fecha_nace).days
-    edad_mes = edad_dias // 30  # Aproximado
-    return edad_dias, edad_mes
 
-# Función para leer la tabla de referencia
+# def calcular_edad(fecha_nace, fecha_control):
+#     diferencia = relativedelta(fecha_control, fecha_nace)
+#     edad_mes = diferencia.years * 12 + diferencia.months
+#     edad_dias = (fecha_control - fecha_nace).days
+#     return edad_dias, edad_mes
+
+def calcular_edad(fecha_nace, fecha_control):
+    diferencia = relativedelta(fecha_control, fecha_nace)
+    anios = diferencia.years
+    meses = diferencia.months
+    dias = diferencia.days
+    edad_mes = anios * 12 + meses
+    edad_dias = (fecha_control - fecha_nace).days
+    edad_str = f"{anios} A {meses} M {dias} D"
+    return edad_dias, edad_mes, edad_str
 # Función para leer la tabla de referencia
 def obtener_parametros(tabla, edad_col, edad, sexo, bus):
     df = pd.read_csv(f"{tabla}.csv", sep=";", dtype=str)
@@ -36,7 +46,7 @@ def obtener_parametros(tabla, edad_col, edad, sexo, bus):
 
 # Función principal para calcular el Z-score
 def calcular_zscore(sexo, bus, valor, fecha_nace, fecha_control):
-    edad_dias, edad_mes = calcular_edad(fecha_nace, fecha_control)
+    edad_dias, edad_mes, edad_str = calcular_edad(fecha_nace, fecha_control)
 
     # Determinar la tabla de referencia
     if edad_dias < 1875:  # Menores de 5 años
@@ -67,8 +77,13 @@ def calcular_zscore(sexo, bus, valor, fecha_nace, fecha_control):
     return zscore
 
 # Ejemplo de uso
-fecha_nacimiento = datetime.strptime("2018-01-01", "%Y-%m-%d")
-fecha_control = datetime.strptime("2023-06-01", "%Y-%m-%d")
-zscore = calcular_zscore(sexo=1, bus='i', valor=14.5, fecha_nace=fecha_nacimiento, fecha_control=fecha_control)
+fecha_nacimiento = datetime.strptime("2020-01-18", "%Y-%m-%d")
+fecha_control = datetime.strptime("2023-06-15", "%Y-%m-%d")
 
+zscore = calcular_zscore(sexo=1, bus='p', valor=13.9, fecha_nace=fecha_nacimiento, fecha_control=fecha_control)
 print(f"Z-score calculado: {zscore}")
+
+edad_dias, edad_mes, edad_str = calcular_edad(fecha_nacimiento, fecha_control)
+print(f"Edad en dias: {edad_dias}")
+print(f"Edad en meses: {edad_mes}")
+print(f"Edad en formato string: {edad_str}")

@@ -1,0 +1,6 @@
+$host="109.106.251.18";
+$port=3306;
+$socket="";
+$user="saltaped";
+$password="enfi7625";
+$dbname="saltaped_antro";
